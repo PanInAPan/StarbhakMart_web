@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var itemQuantity = {};
-    var initialItemPrices = {}; // Simpan harga awal item
-    var itemPrices = {}; // Tambahkan daftar harga item
+    var initialItemPrices = {};
+    var itemPrices = {};
 
     function hitungTotalSetelahPajak(totalSebelumPajak) {
         var pajak = totalSebelumPajak * 0.1;
@@ -47,8 +47,8 @@ $(document).ready(function() {
 
             if (!itemQuantity[formattedItemName]) {
                 itemQuantity[formattedItemName] = 1;
-                itemPrices[formattedItemName] = itemPrice; // Tambahkan harga item
-                initialItemPrices[formattedItemName] = itemPrice; // Simpan harga awal item
+                itemPrices[formattedItemName] = itemPrice;
+                initialItemPrices[formattedItemName] = itemPrice;
                 var newElement = `
                     <div class="barang">
                         <div class="detail-kiri">
@@ -67,19 +67,19 @@ $(document).ready(function() {
                     </div>
                 `;
                 $('.belanja').append(newElement);
-                updateTotalAfterQuantityChange(); // Hitung ulang total setelah menambah item
+                updateTotalAfterQuantityChange();
             } else {
                 itemQuantity[formattedItemName]++;
-                var updatedItemPrice = itemPrice * itemQuantity[formattedItemName]; // Hitung harga item yang baru
-                itemPrices[formattedItemName] = itemPrice; // Perbarui harga item di dalam objek itemPrices
-                $('#stock_' + formattedItemName).text(itemQuantity[formattedItemName]); // Update tampilan jumlah
+                var updatedItemPrice = itemPrice * itemQuantity[formattedItemName];
+                itemPrices[formattedItemName] = itemPrice;
+                $('#stock_' + formattedItemName).text(itemQuantity[formattedItemName]);
                 $('.belanja .barang').each(function() {
                     var currentItemName = $(this).find('.detail-kiri p').first().text().trim();
                     if (currentItemName === itemName) {
                         $(this).find('.detail-kiri .normal').text('Unit Price: Rp. ' + updatedItemPrice.toLocaleString('id-ID')); // Update tampilan harga
                     }
                 });
-                updateTotalAfterQuantityChange(); // Hitung ulang total setelah mengubah kuantitas
+                updateTotalAfterQuantityChange();
             }
         } else {
             console.error('Harga item tidak valid');
@@ -100,17 +100,14 @@ $(document).ready(function() {
 
         if (currentQuantity > 1) {
             currentQuantity--;
-            quantityElement.text(currentQuantity); // Kurangi jumlah kuantitas di tampilan
-            itemQuantity[formattedItemName]--; // Kurangi jumlah kuantitas
+            quantityElement.text(currentQuantity);
+            itemQuantity[formattedItemName]--;
 
-            // Perbarui harga item pada "Unit Price"
             var updatedItemPrice = initialItemPrices[formattedItemName] * currentQuantity;
             $item.find('.detail-kiri .normal').text('Unit Price: Rp. ' + updatedItemPrice.toLocaleString('id-ID'));
 
-            // Perbarui total setelah perubahan kuantitas
             updateTotalAfterQuantityChange();
         } else {
-            // Penanganan jika kuantitas adalah 1 atau kurang
             delete itemQuantity[formattedItemName];
             delete itemPrices[formattedItemName];
             $item.remove();
